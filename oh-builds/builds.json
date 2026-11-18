@@ -1,0 +1,144 @@
+{
+  "updated": "2026-11-18",
+  "quick": [
+    {"url": "https://drive.google.com/drive/folders/1jN_6kE3y7JaVt4mbv7TUljV-W-LVX2zs",
+     "title": {"zh": "最新包 · 0.0.2.5", "en": "Latest build · 0.0.2.5", "vi": "Bản mới nhất · 0.0.2.5"},
+     "sub": {"zh": "研发 Drive 构建文件夹", "en": "Developer's Drive build folder", "vi": "Thư mục build trên Drive của nhà phát triển"}},
+    {"url": "https://docs.google.com/spreadsheets/d/19nPWsZw7s_wSklfAdlalqsAB9MrO1oRj_K0IIVzoQFs/edit",
+     "title": {"zh": "当前 Buglist · 0.0.2.5", "en": "Current buglist · 0.0.2.5", "vi": "Buglist hiện tại · 0.0.2.5"},
+     "sub": {"zh": "VN + SEA 合表，按 Region 区分", "en": "VN + SEA in one sheet, split by Region", "vi": "VN + SEA chung một bảng, phân theo Region"}},
+    {"url": "https://drive.google.com/drive/folders/1hFlFN65ZErCvlCSJebAnd1HcU8zht1yl",
+     "title": {"zh": "Buglist 文件夹", "en": "Buglist folder", "vi": "Thư mục Buglist"},
+     "sub": {"zh": "VNG 侧所有 bug 表", "en": "All VNG bug sheets", "vi": "Tất cả bảng bug phía VNG"}},
+    {"url": "https://drive.google.com/drive/folders/1v6jHXt5A8kYt3IhKsdMp_0btN-hBXVrI",
+     "title": {"zh": "全部构建 · bpa-vng", "en": "All builds · bpa-vng", "vi": "Tất cả build · bpa-vng"},
+     "sub": {"zh": "研发交付的所有版本文件夹", "en": "Every build folder the developer delivered", "vi": "Mọi thư mục phiên bản nhà phát triển đã giao"}}
+  ],
+  "builds": [
+    {
+      "ver": "0.0.2.5", "date": "2026-11-17", "kind": "live", "current": true,
+      "tag": {"zh": "正式版线 · 测试中", "en": "Production line · testing", "vi": "Nhánh chính thức · đang test"},
+      "items": {
+        "zh": ["基于全球版 1.44.0.7 重新打底",
+               "首个 iOS 包（VN / SEA 测试包 + 正式包），可用于安全预扫描和 11/24 首次提审",
+               "Firebase 拆为两个项目：VNG SDK 用默认项目，游戏服务用独立的游戏项目",
+               "更换为最终版 Overgeared Hero VNG 图标；按地区写入 AppLovin 广告参数",
+               "中间构建：快速登录、广告、IAP、AppsFlyer 事件在后续版本补齐，VNG 支付暂不在本版"],
+        "en": ["Rebuilt on top of global build 1.44.0.7",
+               "First iOS builds (VN / SEA, QA + Production), usable for the security pre-scan and the first App Store submission on 11/24",
+               "Firebase split into two projects: the default project for the VNG SDK, a separate game project for game services",
+               "Final Overgeared Hero VNG icon; AppLovin ad parameters set per region",
+               "Interim build: quick login, ads, IAP and AppsFlyer events come in later builds; VNG payment is not in this build"],
+        "vi": ["Dựng lại trên nền bản Global 1.44.0.7",
+               "Bản iOS đầu tiên (VN / SEA, QA + Production), dùng cho quét bảo mật trước và lần nộp duyệt App Store đầu tiên ngày 24/11",
+               "Firebase tách thành hai project: project mặc định cho VNG SDK, project game riêng cho dịch vụ game",
+               "Đổi sang icon chính thức Overgeared Hero VNG; cấu hình tham số quảng cáo AppLovin theo khu vực",
+               "Bản trung gian: đăng nhập nhanh, quảng cáo, IAP và sự kiện AppsFlyer sẽ bổ sung ở bản sau; chưa có thanh toán VNG"]
+      },
+      "note": {
+        "zh": "文件：Android VN / SEA 的 QA 与 Production（APK / AAB）、iOS VN / SEA 的 QA 与 Production IPA（附 xcarchive）、Windows 本地化 QA 工具。研发 11/18 起按「App ID / 版本 / QA·Prod」命名交付。",
+        "en": "Files: Android VN / SEA QA and Production (APK / AAB), iOS VN / SEA QA and Production IPA (with xcarchive), Windows localization QA tool. From 11/18 the developer names deliveries as \"App ID / version / QA·Prod\".",
+        "vi": "Tệp: Android VN / SEA bản QA và Production (APK / AAB), iOS VN / SEA bản QA và Production IPA (kèm xcarchive), công cụ QA bản địa hóa cho Windows. Từ 18/11 nhà phát triển đặt tên bản giao theo \"App ID / phiên bản / QA·Prod\"."
+      },
+      "links": [
+        {"type": "download", "url": "https://drive.google.com/drive/folders/1jN_6kE3y7JaVt4mbv7TUljV-W-LVX2zs"},
+        {"type": "notes", "url": "https://drive.google.com/file/d/1VcG_FxgSaIASvWmrYFrT7nAnaD_-90X8/view", "sub": "0.0.2.5.md"},
+        {"type": "bugs", "url": "https://docs.google.com/spreadsheets/d/19nPWsZw7s_wSklfAdlalqsAB9MrO1oRj_K0IIVzoQFs/edit", "sub": "VN + SEA"}
+      ],
+      "bugs": {"total": 1, "vn": 0, "sea": 1, "open": 1}
+    },
+    {
+      "ver": "0.0.2.4", "date": "2026-11-17", "kind": "skip",
+      "tag": {"zh": "内部过渡 · 不测", "en": "Internal interim · not tested", "vi": "Bản trung gian nội bộ · không test"},
+      "items": {
+        "zh": ["同一条线的中间构建，iOS 有链接和登录问题，已被 0.0.2.5 取代"],
+        "en": ["Interim build on the same line; iOS had linking and login issues; superseded by 0.0.2.5"],
+        "vi": ["Bản trung gian cùng nhánh, iOS bị lỗi liên kết và đăng nhập; đã được thay bằng 0.0.2.5"]
+      },
+      "links": [{"type": "folder", "url": "https://drive.google.com/drive/folders/1xpRAohpCHX7cYghwm9aQN6jzHk3dJ6k_"}]
+    },
+    {
+      "ver": "0.0.2.3", "date": "2026-11-03", "kind": "green",
+      "tag": {"zh": "版号提审包", "en": "License submission build", "vi": "Bản nộp xin giấy phép"},
+      "items": {
+        "zh": ["11/04 定为越南版号（G2）提审包；同批出了 VN / SEA 正式版 AAB",
+               "图标换为 C31 图标；切换账号沿用 VNG 账号管理选中的 UID，不再重新快速登录",
+               "越南语账号管理按钮文案调整"],
+        "en": ["Chosen on 11/04 as the Vietnam license (G2) submission build; VN / SEA production AABs built in the same batch",
+               "Icon changed to the C31 icon; switching accounts now keeps the UID selected in VNG account management instead of re-running quick login",
+               "Vietnamese wording of the account management button adjusted"],
+        "vi": ["Ngày 04/11 chốt làm bản nộp giấy phép G2 tại Việt Nam; cùng đợt có AAB chính thức VN / SEA",
+               "Đổi sang icon C31; chuyển tài khoản giữ UID đã chọn trong quản lý tài khoản VNG, không đăng nhập nhanh lại",
+               "Chỉnh câu chữ tiếng Việt của nút quản lý tài khoản"]
+      },
+      "links": [
+        {"type": "download", "url": "https://drive.google.com/drive/folders/1_z8KBO567qx8PIlEZGiVtuY4mDL4Yo8Z"},
+        {"type": "notes", "url": "https://drive.google.com/file/d/12YFyAKuA3tXF7cJvWBgfx8-l4T3DHlDT/view", "sub": "0.0.2.3.md"},
+        {"type": "bugs", "url": "https://docs.google.com/spreadsheets/d/1NUjkarJFDBXs5RBfFD5xpV66eGFzizhUV3qky8-dGiU/edit", "sub": {"zh": "版号包", "en": "License", "vi": "Giấy phép"}},
+        {"type": "bugs", "url": "https://docs.google.com/spreadsheets/d/1MncCLOj1gs64RrV45dLcplpbuOMtLB3UDanqsvmnjCI/edit", "sub": {"zh": "VN 正式版", "en": "VN Prod", "vi": "VN chính thức"}},
+        {"type": "bugs", "url": "https://docs.google.com/spreadsheets/d/1fZBoBFVwcb0azW4hZ6HZg9_5PmG9HDsye_0kxyhfyas/edit", "sub": {"zh": "SEA 正式版", "en": "SEA Prod", "vi": "SEA chính thức"}}
+      ],
+      "bugs": {"label": {"zh": "版号包 Bug", "en": "License build bugs", "vi": "Bug bản giấy phép"},
+               "total": 5, "fixed": 5,
+               "extra": {"zh": "· 正式版两张表无记录", "en": "· Production sheets: no entries", "vi": "· Hai bảng bản chính thức: chưa có bug"}}
+    },
+    {
+      "ver": "0.0.2.2", "date": "2026-11-02", "kind": "green",
+      "tag": {"zh": "版号包", "en": "License build", "vi": "Bản giấy phép"},
+      "items": {
+        "zh": ["大厅设置新增「Quản lý tài khoản VNG」账号管理按钮",
+               "VN 正式包与 Green 包改名 Overgeared Hero VNG；越南语 / 泰语 / 印尼语标题图换新 logo",
+               "同一文件夹内含 0.0.2.1：修订 155 条越南语文本"],
+        "en": ["Added the \"Quản lý tài khoản VNG\" account management button to lobby settings",
+               "VN production and Green builds renamed Overgeared Hero VNG; new logo on the Vietnamese / Thai / Indonesian title screens",
+               "The same folder includes 0.0.2.1: 155 Vietnamese text fixes"],
+        "vi": ["Thêm nút \"Quản lý tài khoản VNG\" trong cài đặt sảnh",
+               "Bản chính thức VN và bản Green đổi tên thành Overgeared Hero VNG; màn hình tiêu đề tiếng Việt / Thái / Indonesia dùng logo mới",
+               "Cùng thư mục có 0.0.2.1: sửa 155 chuỗi tiếng Việt"]
+      },
+      "links": [
+        {"type": "download", "url": "https://drive.google.com/drive/folders/1cUDNg_4a_DLRTb655dxc_3hYYZJsTdtm"},
+        {"type": "notes", "url": "https://drive.google.com/file/d/1wmMDlS26XtRuqFMPJXKgHkW4n3Bz9nLn/view", "sub": "0.0.2.2.md"},
+        {"type": "notes", "url": "https://drive.google.com/file/d/1xcslF_sRncs_Z3nzYT-MM17ACU0uatuX/view", "sub": "0.0.2.1.md"},
+        {"type": "bugs", "url": "https://docs.google.com/spreadsheets/d/1NUjkarJFDBXs5RBfFD5xpV66eGFzizhUV3qky8-dGiU/edit", "sub": {"zh": "版号包", "en": "License", "vi": "Giấy phép"}}
+      ],
+      "bugs": {"total": 5, "open": 2, "nf": 3}
+    },
+    {
+      "ver": "0.0.2", "date": "2026-10-29", "kind": "green",
+      "tag": {"zh": "版号包", "en": "License build", "vi": "Bản giấy phép"},
+      "items": {
+        "zh": ["VN 包关闭广告（按钮保留但不可用）",
+               "赌博类内容遮蔽扩展到骰子活动；屏蔽词覆盖所有玩家输入框",
+               "年龄分级提示调整"],
+        "en": ["Ads disabled in the VN build (button kept but inactive)",
+               "Gambling-content masking extended to the dice event; word filter now covers every player input field",
+               "Age rating notice adjusted"],
+        "vi": ["Tắt quảng cáo ở bản VN (giữ nút nhưng không dùng được)",
+               "Che nội dung cờ bạc mở rộng sang sự kiện xúc xắc; lọc từ cấm áp dụng cho mọi ô nhập của người chơi",
+               "Chỉnh thông báo phân loại độ tuổi"]
+      },
+      "links": [
+        {"type": "download", "url": "https://drive.google.com/drive/folders/1oEqXy8Cicn6cqkPXX_DWEhrL8oz158zp"},
+        {"type": "notes", "url": "https://drive.google.com/file/d/1BvtaNCnZmeuwPjIQPl7vrghwckMGgtUo/view", "sub": "0.0.2.md"},
+        {"type": "bugs", "url": "https://docs.google.com/spreadsheets/d/1NUjkarJFDBXs5RBfFD5xpV66eGFzizhUV3qky8-dGiU/edit", "sub": {"zh": "版号包", "en": "License", "vi": "Giấy phép"}}
+      ],
+      "bugs": {"total": 9, "fixed": 8, "nf": 1}
+    },
+    {
+      "ver": "0.0.1", "date": "2026-10-26", "kind": "green",
+      "tag": {"zh": "首个版号包", "en": "First license build", "vi": "Bản giấy phép đầu tiên"},
+      "items": {
+        "zh": ["首个 VN Green 包：快速登录、越南语默认、移除轮盘、屏蔽词、12+ 标识、VNGGAMES 品牌、条款改由 VNG 托管"],
+        "en": ["First VN Green build: quick login, Vietnamese by default, roulette removed, word filter, 12+ label, VNGGAMES branding, terms hosted by VNG"],
+        "vi": ["Bản Green VN đầu tiên: đăng nhập nhanh, mặc định tiếng Việt, bỏ vòng quay, lọc từ cấm, nhãn 12+, thương hiệu VNGGAMES, điều khoản do VNG lưu trữ"]
+      },
+      "links": [
+        {"type": "download", "url": "https://drive.google.com/drive/folders/1y-sqAtAsvnllL1YPOUkjNFhhb5FPzere"},
+        {"type": "bugs", "url": "https://docs.google.com/spreadsheets/d/1NUjkarJFDBXs5RBfFD5xpV66eGFzizhUV3qky8-dGiU/edit", "sub": {"zh": "版号包", "en": "License", "vi": "Giấy phép"}}
+      ],
+      "bugs": {"total": 13, "fixed": 8, "nf": 5}
+    }
+  ],
+  "serverPackage": "https://drive.google.com/drive/folders/1zaJn5v8wIL1pfk_FPJsSh6SSc0QDNC87"
+}

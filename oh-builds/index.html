@@ -114,6 +114,8 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:
 .toc .dot{width:6px;height:6px;border-radius:50%;background:var(--accent);display:inline-block;margin-left:4px;vertical-align:middle}
 .toc .skip .tv{color:var(--dim);font-weight:500}
 .build{scroll-margin-top:16px}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 @media (max-width:860px){
   .layout{grid-template-columns:1fr;gap:16px}
   .toc{position:sticky;top:env(safe-area-inset-top,0px);z-index:2;max-height:none;padding:8px;border-radius:8px}
@@ -121,6 +123,7 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:
   .toc ol{flex-direction:row;overflow-x:auto;gap:6px}
   .toc a{flex:0 0 auto;border-left:0;border:1px solid var(--line)}
   .toc .td{display:none}
+  .build{scroll-margin-top:84px}
 }
 </style>
 </head>
@@ -152,15 +155,33 @@ footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:
   </footer>
 </div>
 <script>
-let io=null;
-function spy(){
-  if(io) io.disconnect();
-  const links=[...document.querySelectorAll("#toc a")];
-  const set=v=>links.forEach(a=>{const on=a.dataset.v===v; a.classList.toggle("on",on); if(on){a.setAttribute("aria-current","true"); if(innerWidth<=860) a.scrollIntoView({block:"nearest",inline:"nearest"});} else a.removeAttribute("aria-current");});
-  io=new IntersectionObserver(es=>{const vis=es.filter(e=>e.isIntersecting).sort((a,b)=>a.boundingClientRect.top-b.boundingClientRect.top); if(vis[0]) set(vis[0].target.id.slice(2));},{rootMargin:"0px 0px -65% 0px"});
-  document.querySelectorAll(".build").forEach(el=>io.observe(el));
-  if(links[0]) set(links[0].dataset.v);
+let lockUntil=0, ticking=false;
+function setActive(v){
+  const ol=document.getElementById("toc");
+  ol.querySelectorAll("a").forEach(a=>{
+    const on=a.dataset.v===v; a.classList.toggle("on",on);
+    if(on){ a.setAttribute("aria-current","true");
+      if(innerWidth<=860){ const l=a.offsetLeft-ol.offsetLeft, r=l+a.offsetWidth;
+        if(l<ol.scrollLeft||r>ol.scrollLeft+ol.clientWidth) ol.scrollLeft=l-8; } }
+    else a.removeAttribute("aria-current");
+  });
 }
+function calcActive(){
+  ticking=false;
+  if(Date.now()<lockUntil) return;
+  const arts=[...document.querySelectorAll(".build")]; if(!arts.length) return;
+  const line=innerWidth<=860?110:120;
+  let cur=arts[0];
+  for(const a of arts){ if(a.getBoundingClientRect().top<=line) cur=a; }
+  setActive(cur.id.slice(2));
+}
+function spy(){
+  document.querySelectorAll("#toc a").forEach(a=>a.addEventListener("click",()=>{ setActive(a.dataset.v); lockUntil=Date.now()+1500; }));
+  calcActive();
+}
+addEventListener("scroll",()=>{ if(!ticking){ ticking=true; requestAnimationFrame(calcActive); } },{passive:true});
+["wheel","touchstart","keydown"].forEach(t=>addEventListener(t,()=>{ lockUntil=0; },{passive:true}));
+addEventListener("resize",()=>calcActive());
 const UI = {
   zh:{h1:"OH VNG 版本与 Buglist 总览",lede:"每个研发构建一行：在哪下载、改了什么、bug 记在哪张表。Bug 本身仍然记在 Google 在线表里，这里只做入口汇总。",
       toc:"版本索引",ledger:"构建记录",asof:d=>"新版本在上 · 更新于 "+d,download:"下载包",notes:"版本说明",bugs:"Buglist",folder:"构建文件夹",

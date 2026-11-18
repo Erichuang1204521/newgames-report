@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>OH VNG Build Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+SC:wght@400;500;600&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+/* Layout: a release ledger — sticky quick-links strip, then one row per build, newest first, version number as the left rail */
+:root{
+  --bg:#f5f6f8; --surface:#ffffff; --ink:#18202b; --muted:#5d6878; --line:#dde2e9;
+  --accent:#2c5d8f; --accent-soft:#e3ecf6;
+  --vn:#b42318; --vn-soft:#fde7e5; --sea:#1d5fbf; --sea-soft:#e2edfc;
+  --ok:#2f7a3b; --ok-soft:#e4f3e6; --warn:#a15c00; --warn-soft:#fdf0dc; --dim:#7a8494; --dim-soft:#eef0f3;
+  --f-body:"IBM Plex Sans","IBM Plex Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,"SFMono-Regular",Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --bg:#11161d; --surface:#18202a; --ink:#e6ebf2; --muted:#9aa6b6; --line:#2a3542;
+    --accent:#7fb0e3; --accent-soft:#1f3349;
+    --vn:#ff8a7e; --vn-soft:#3a1d1b; --sea:#7fb3ff; --sea-soft:#182c47;
+    --ok:#7fcf8b; --ok-soft:#1b3121; --warn:#f0b35a; --warn-soft:#3a2a12; --dim:#8b96a6; --dim-soft:#222b36;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --bg:#11161d; --surface:#18202a; --ink:#e6ebf2; --muted:#9aa6b6; --line:#2a3542;
+  --accent:#7fb0e3; --accent-soft:#1f3349;
+  --vn:#ff8a7e; --vn-soft:#3a1d1b; --sea:#7fb3ff; --sea-soft:#182c47;
+  --ok:#7fcf8b; --ok-soft:#1b3121; --warn:#f0b35a; --warn-soft:#3a2a12; --dim:#8b96a6; --dim-soft:#222b36;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));}
+.wrap{max-width:980px;margin:0 auto;padding-block:32px 56px;display:flex;flex-direction:column;gap:28px}
+a{color:var(--accent)}
+a:focus-visible,.btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+header{display:flex;flex-direction:column;gap:10px}
+.eyebrow{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h1{margin:0;font-size:clamp(26px,4vw,34px);font-weight:600;text-wrap:balance;letter-spacing:-.01em}
+.lede{margin:0;color:var(--muted);max-width:68ch}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 20px;display:flex;flex-direction:column;gap:14px}
+.panel h2{margin:0;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
+.quick{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+.qlink{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border:1px solid var(--line);border-radius:8px;text-decoration:none;color:var(--ink);background:var(--bg)}
+.qlink:hover{border-color:var(--accent)}
+.qlink b{font-weight:600;color:var(--accent)}
+.qlink span{font-size:13px;color:var(--muted)}
+.pkg{display:flex;flex-wrap:wrap;gap:8px 18px;font-size:13px;color:var(--muted)}
+.pkg code{font-family:var(--f-mono);font-size:12.5px;color:var(--ink);background:var(--dim-soft);padding:1px 6px;border-radius:4px}
+.ledger{display:flex;flex-direction:column;gap:14px}
+.ledger-head{display:flex;justify-content:space-between;align-items:baseline;flex-wrap:wrap;gap:8px}
+.ledger-head h2{margin:0;font-size:20px;font-weight:600}
+.ledger-head p{margin:0;font-size:13px;color:var(--muted)}
+.build{display:grid;grid-template-columns:150px 1fr;gap:0;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.build.current{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.rail{padding:18px 16px;border-right:1px solid var(--line);display:flex;flex-direction:column;gap:6px;background:var(--bg)}
+.ver{font-family:var(--f-mono);font-weight:700;font-size:22px;letter-spacing:-.02em}
+.date{font-family:var(--f-mono);font-size:12.5px;color:var(--muted);font-variant-numeric:tabular-nums}
+.tag{align-self:flex-start;font-size:12px;font-weight:600;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.t-live{background:var(--accent-soft);color:var(--accent)}
+.t-green{background:var(--ok-soft);color:var(--ok)}
+.t-skip{background:var(--dim-soft);color:var(--dim)}
+.body{padding:18px 20px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.body ul{margin:0;padding-left:18px;display:flex;flex-direction:column;gap:3px}
+.body li{max-width:72ch}
+.note{margin:0;font-size:13px;color:var(--muted)}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.btn{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:500;padding:6px 12px;border-radius:6px;border:1px solid var(--line);text-decoration:none;color:var(--ink);background:var(--surface)}
+.btn:hover{border-color:var(--accent);color:var(--accent)}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--surface)}
+.btn.primary:hover{opacity:.9;color:var(--surface)}
+.btn small{font-family:var(--f-mono);font-size:11px;color:inherit;opacity:.75}
+.bugs{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:13px}
+.bugs .lbl{color:var(--muted)}
+.chip{font-family:var(--f-mono);font-size:12px;padding:2px 8px;border-radius:4px;font-variant-numeric:tabular-nums}
+.c-open{background:var(--warn-soft);color:var(--warn)}
+.c-fixed{background:var(--ok-soft);color:var(--ok)}
+.c-nf{background:var(--vn-soft);color:var(--vn)}
+.c-total{background:var(--dim-soft);color:var(--ink)}
+.c-vn{background:var(--vn-soft);color:var(--vn);font-weight:700}
+.c-sea{background:var(--sea-soft);color:var(--sea);font-weight:700}
+footer{font-size:13px;color:var(--muted);display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--line);padding-top:16px}
+@media (max-width:640px){
+  .build{grid-template-columns:1fr}
+  .rail{border-right:0;border-bottom:1px solid var(--line);flex-direction:row;flex-wrap:wrap;align-items:center;gap:10px}
+  .ver{font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header>
+    <div class="eyebrow">Overgeared Hero VNG · C31 VN / C32 SEA</div>
+    <h1>OH VNG 版本与 Buglist 总览</h1>
+    <p class="lede">每个研发构建一行：在哪下载、改了什么、bug 记在哪张表。Bug 本身仍然记在 Google 在线表里，这里只做入口汇总。Bug 数是快照，以表格实时数据为准。</p>
+  </header>
+
+  <section class="panel" aria-labelledby="q">
+    <h2 id="q">常用入口</h2>
+    <div class="quick">
+      <a class="qlink" href="https://drive.google.com/drive/folders/1jN_6kE3y7JaVt4mbv7TUljV-W-LVX2zs" target="_blank" rel="noopener"><b>最新包 · 0.0.2.5</b><span>研发 Drive 构建文件夹</span></a>
+      <a class="qlink" href="https://docs.google.com/spreadsheets/d/19nPWsZw7s_wSklfAdlalqsAB9MrO1oRj_K0IIVzoQFs/edit" target="_blank" rel="noopener"><b>当前 Buglist · 0.0.2.5</b><span>VN + SEA 合表，按 Region 区分</span></a>
+      <a class="qlink" href="https://drive.google.com/drive/folders/1hFlFN65ZErCvlCSJebAnd1HcU8zht1yl" target="_blank" rel="noopener"><b>Buglist 文件夹</b><span>VNG 侧所有 bug 表</span></a>
+      <a class="qlink" href="https://drive.google.com/drive/folders/1v6jHXt5A8kYt3IhKsdMp_0btN-hBXVrI" target="_blank" rel="noopener"><b>全部构建 · bpa-vng</b><span>研发交付的所有版本文件夹</span></a>
+    </div>
+  </section>
+
+  <section class="ledger" aria-labelledby="l">
+    <div class="ledger-head"><h2 id="l">构建记录</h2><p>新版本在上 · Bug 数截至 2026-11-18</p></div>
+
+    <article class="build current">
+      <div class="rail"><div class="ver">0.0.2.5</div><div class="date">2026-11-17</div><span class="tag t-live">正式版线 · 测试中</span></div>
+      <div class="body">
+        <ul>
+          <li>基于全球版 1.44.0.7 重新打底</li>
+          <li>首个 iOS 包（VN / SEA 测试包 + 正式包），可用于安全预扫描和 11/24 首次提审</li>
+          <li>Firebase 拆为两个项目：VNG SDK 用默认项目，游戏服务用独立的游戏项目</li>
+          <li>更换为最终版 Overgeared Hero VNG 图标；按地区写入 AppLovin 广告参数</li>
+          <li>中间构建：快速登录、广告、IAP、AppsFlyer 事件在后续版本补齐，VNG 支付暂不在本版</li>
+        </ul>
+        <p class="note">文件：Android VN / SEA 的 QA 与 Production（APK / AAB）、iOS VN / SEA 的 QA 与 Production IPA（附 xcarchive）、Windows 本地化 QA 工具。研发 11/18 起按「App ID / 版本 / QA·Prod」命名交付。</p>
+        <div class="links">
+          <a class="btn primary" href="https://drive.google.com/drive/folders/1jN_6kE3y7JaVt4mbv7TUljV-W-LVX2zs" target="_blank" rel="noopener">下载包</a>
+          <a class="btn" href="https://drive.google.com/file/d/1VcG_FxgSaIASvWmrYFrT7nAnaD_-90X8/view" target="_blank" rel="noopener">版本说明 <small>0.0.2.5.md</small></a>
+          <a class="btn" href="https://docs.google.com/spreadsheets/d/19nPWsZw7s_wSklfAdlalqsAB9MrO1oRj_K0IIVzoQFs/edit" target="_blank" rel="noopener">Buglist <small>VN + SEA</small></a>
+        </div>
+        <div class="bugs"><span class="lbl">Bug</span><span class="chip c-total">共 1</span><span class="chip c-vn">VN 0</span><span class="chip c-sea">SEA 1</span><span class="chip c-open">Open 1</span></div>
+      </div>
+    </article>
+
+    <article class="build">
+      <div class="rail"><div class="ver">0.0.2.4</div><div class="date">2026-11-17</div><span class="tag t-skip">内部过渡 · 不测</span></div>
+      <div class="body">
+        <ul><li>同一条线的中间构建，iOS 有链接和登录问题，已被 0.0.2.5 取代</li></ul>
+        <div class="links"><a class="btn" href="https://drive.google.com/drive/folders/1xpRAohpCHX7cYghwm9aQN6jzHk3dJ6k_" target="_blank" rel="noopener">构建文件夹</a></div>
+      </div>
+    </article>
+
+    <article class="build">
+      <div class="rail"><div class="ver">0.0.2.3</div><div class="date">2026-11-03</div><span class="tag t-green">版号提审包</span></div>
+      <div class="body">
+        <ul>
+          <li>11/04 定为越南版号（G2）提审包；同批出了 VN / SEA 正式版 AAB</li>
+          <li>图标换为 C31 图标；切换账号沿用 VNG 账号管理选中的 UID，不再重新快速登录</li>
+          <li>越南语账号管理按钮文案调整</li>
+        </ul>
+        <div class="links">
+          <a class="btn primary" href="https://drive.google.com/drive/folders/1_z8KBO567qx8PIlEZGiVtuY4mDL4Yo8Z" target="_blank" rel="noopener">下载包</a>
+          <a class="btn" href="https://drive.google.com/file/d/12YFyAKuA3tXF7cJvWBgfx8-l4T3DHlDT/view" target="_blank" rel="noopener">版本说明 <small>0.0.2.3.md</small></a>
+          <a class="btn" href="https://docs.google.com/spreadsheets/d/1NUjkarJFDBXs5RBfFD5xpV66eGFzizhUV3qky8-dGiU/edit" target="_blank" rel="noopener">Buglist <small>版号包</small></a>
+          <a class="btn" href="https://docs.google.com/spreadsheets/d/1MncCLOj1gs64RrV45dLcplpbuOMtLB3UDanqsvmnjCI/edit" target="_blank" rel="noopener">Buglist <small>VN 正式版</small></a>
+          <a class="btn" href="https://docs.google.com/spreadsheets/d/1fZBoBFVwcb0azW4hZ6HZg9_5PmG9HDsye_0kxyhfyas/edit" target="_blank" rel="noopener">Buglist <small>SEA 正式版</small></a>
+        </div>
+        <div class="bugs"><span class="lbl">版号包 Bug</span><span class="chip c-total">共 5</span><span class="chip c-fixed">Fixed 5</span><span class="lbl">· 正式版两张表无记录</span></div>
+      </div>
+    </article>
+
+    <article class="build">
+      <div class="rail"><div class="ver">0.0.2.2</div><div class="date">2026-11-02</div><span class="tag t-green">版号包</span></div>
+      <div class="body">
+        <ul>
+          <li>大厅设置新增「Quản lý tài khoản VNG」账号管理按钮</li>
+          <li>VN 正式包与 Green 包改名 Overgeared Hero VNG；越南语 / 泰语 / 印尼语标题图换新 logo</li>
+          <li>同一文件夹内含 0.0.2.1：修订 155 条越南语文本</li>
+        </ul>
+        <div class="links">
+          <a class="btn primary" href="https://drive.google.com/drive/folders/1cUDNg_4a_DLRTb655dxc_3hYYZJsTdtm" target="_blank" rel="noopener">下载包</a>
+          <a class="btn" href="https://drive.google.com/file/d/1wmMDlS26XtRuqFMPJXKgHkW4n3Bz9nLn/view" target="_blank" rel="noopener">版本说明 <small>0.0.2.2.md</small></a>
+          <a class="btn" href="https://drive.google.com/file/d/1xcslF_sRncs_Z3nzYT-MM17ACU0uatuX/view" target="_blank" rel="noopener">版本说明 <small>0.0.2.1.md</small></a>
+          <a class="btn" href="https://docs.google.com/spreadsheets/d/1NUjkarJFDBXs5RBfFD5xpV66eGFzizhUV3qky8-dGiU/edit" target="_blank" rel="noopener">Buglist <small>版号包</small></a>
+        </div>
+        <div class="bugs"><span class="lbl">Bug</span><span class="chip c-total">共 5</span><span class="chip c-open">Open 2</span><span class="chip c-nf">Not Fixed 3</span></div>
+      </div>
+    </article>
+
+    <article class="build">
+      <div class="rail"><div class="ver">0.0.2</div><div class="date">2026-10-29</div><span class="tag t-green">版号包</span></div>
+      <div class="body">
+        <ul>
+          <li>VN 包关闭广告（按钮保留但不可用）</li>
+          <li>赌博类内容遮蔽扩展到骰子活动；屏蔽词覆盖所有玩家输入框</li>
+          <li>年龄分级提示调整</li>
+        </ul>
+        <div class="links">
+          <a class="btn primary" href="https://drive.google.com/drive/folders/1oEqXy8Cicn6cqkPXX_DWEhrL8oz158zp" target="_blank" rel="noopener">下载包</a>
+          <a class="btn" href="https://drive.google.com/file/d/1BvtaNCnZmeuwPjIQPl7vrghwckMGgtUo/view" target="_blank" rel="noopener">版本说明 <small>0.0.2.md</small></a>
+          <a class="btn" href="https://docs.google.com/spreadsheets/d/1NUjkarJFDBXs5RBfFD5xpV66eGFzizhUV3qky8-dGiU/edit" target="_blank" rel="noopener">Buglist <small>版号包</small></a>
+        </div>
+        <div class="bugs"><span class="lbl">Bug</span><span class="chip c-total">共 9</span><span class="chip c-fixed">Fixed 8</span><span class="chip c-nf">Not Fixed 1</span></div>
+      </div>
+    </article>
+
+    <article class="build">
+      <div class="rail"><div class="ver">0.0.1</div><div class="date">2026-10-26</div><span class="tag t-green">首个版号包</span></div>
+      <div class="body">
+        <ul><li>首个 VN Green 包：快速登录、越南语默认、移除轮盘、屏蔽词、12+ 标识、VNGGAMES 品牌、条款改由 VNG 托管</li></ul>
+        <div class="links">
+          <a class="btn primary" href="https://drive.google.com/drive/folders/1y-sqAtAsvnllL1YPOUkjNFhhb5FPzere" target="_blank" rel="noopener">下载包</a>
+          <a class="btn" href="https://docs.google.com/spreadsheets/d/1NUjkarJFDBXs5RBfFD5xpV66eGFzizhUV3qky8-dGiU/edit" target="_blank" rel="noopener">Buglist <small>版号包</small></a>
+        </div>
+        <div class="bugs"><span class="lbl">Bug</span><span class="chip c-total">共 13</span><span class="chip c-fixed">Fixed 8</span><span class="chip c-nf">Not Fixed 5</span></div>
+      </div>
+    </article>
+  </section>
+
+  <footer>
+    <span>版号包（0.0.1 – 0.0.2.3）的 bug 都记在同一张表「VN License Build_0.0.1_Feedback」里，每个版本一个页签。</span>
+    <span>研发文件夹里的「0.0.0」是服务器搭建包（11/06 交付给 VNG 搭环境用），不是客户端构建：<a href="https://drive.google.com/drive/folders/1zaJn5v8wIL1pfk_FPJsSh6SSc0QDNC87" target="_blank" rel="noopener">0.0.0 文件夹</a>。</span>
+    <span>链接需要有对应 Drive 文件的访问权限才能打开。</span>
+  </footer>
+</div>
+</body>
+</html>
